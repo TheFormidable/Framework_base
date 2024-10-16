@@ -115,7 +115,11 @@ import dagger.Lazy;
 import kotlin.Unit;
 
 import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.ExperimentalCoroutinesApi;
+
+    import kotlinx.coroutines.ExperimentalCoroutinesApi;
+    import vendor.xiaomi.hardware.fingerprintextension.IXiaomiFingerprint;
+    import vendor.xiaomi.hw.touchfeature.ITouchFeature;
+    
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -186,7 +190,11 @@ public class UdfpsController implements DozeReceiver, Dumpable {
     @NonNull private final UdfpsKeyguardAccessibilityDelegate mUdfpsKeyguardAccessibilityDelegate;
     @NonNull private final SelectedUserInteractor mSelectedUserInteractor;
     private final boolean mIgnoreRefreshRate;
+    
     private final KeyguardTransitionInteractor mKeyguardTransitionInteractor;
+    private static ITouchFeature xaiomiTouchFeatureAidl = null;
+    private static IXiaomiFingerprint xaiomiFingerprintExtensionAidl = null;
+    
 
     // Currently the UdfpsController supports a single UDFPS sensor. If devices have multiple
     // sensors, this, in addition to a lot of the code here, will be updated.
@@ -573,7 +581,11 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             // It's possible on some devices to get duplicate touches from both doze and the
             // normal touch listener. Don't reset the down in this case to avoid duplicate downs
             if (!mIsAodInterruptActive) {
-                mOnFingerDown = false;
+                
+    mOnFingerDown = false;
+    xaiomiTouchFeature(0);
+    xiaomiFingerprintExtension(0);
+    
             }
         } else if (!DeviceEntryUdfpsRefactor.isEnabled()) {
             if ((mLockscreenShadeTransitionController.getQSDragProgress() != 0f
@@ -865,7 +877,11 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         }
         if (overlay.show(this, mOverlayParams)) {
             Log.v(TAG, "showUdfpsOverlay | adding window reason=" + requestReason);
-            mOnFingerDown = false;
+            
+    mOnFingerDown = false;
+    xaiomiTouchFeature(0);
+    xiaomiFingerprintExtension(0);
+    
             mAttemptedToDismissKeyguard = false;
             mOrientationListener.enable();
             if (mFingerprintManager != null) {
@@ -1175,7 +1191,12 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             }
         }
 
-        for (Callback cb : mCallbacks) {
+        
+    xaiomiTouchFeature(1);
+    xiaomiFingerprintExtension(1);
+    
+    for (Callback cb : mCallbacks) {
+    
             cb.onFingerDown();
         }
         updateViewDimAmount();
@@ -1214,11 +1235,20 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         if (mOnFingerDown) {
             mFingerprintManager.onPointerUp(requestId, mSensorProps.sensorId, pointerId, x,
                     y, minor, major, orientation, time, gestureStart, isAod);
-            for (Callback cb : mCallbacks) {
+            
+    xaiomiTouchFeature(1);
+    xiaomiFingerprintExtension(1);
+    
+    for (Callback cb : mCallbacks) {
+    
                 cb.onFingerUp();
             }
         }
-        mOnFingerDown = false;
+        
+    mOnFingerDown = false;
+    xaiomiTouchFeature(0);
+    xiaomiFingerprintExtension(0);
+    
         unconfigureDisplay(view);
         cancelAodSendFingerUpAction();
 
