@@ -969,3 +969,7 @@ android_app {
         "wmshell.protolog.pb",
     ],
 }
+
+
+// Adding Xiaomi fingerprint extension support
+static_libs: ["xiaomi.fingerprintextension"],

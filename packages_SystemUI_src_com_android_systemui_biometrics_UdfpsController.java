@@ -1007,7 +1007,14 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         }
         cancelAodSendFingerUpAction();
         if (mOverlay != null && mOverlay.getTouchOverlay() != null) {
-            onFingerUp(mOverlay.getRequestId(), mOverlay.getTouchOverlay());
+            onFingerUp(mOverlay.getRequestId(), 
+    mOverlay.getTouchOverlay());
+    
+    // Xiaomi-specific fingerprint extension
+    if (mFingerprintExtension != null) {
+        mFingerprintExtension.onUiReady();
+    }
+    
         }
     }
 

@@ -287,3 +287,7 @@ prebuilt_etc {
     name: "core.protolog.pb",
     src: ":gen-core.protolog.pb",
 }
+
+
+// Adding Xiaomi touch feature support
+static_libs: ["xiaomi.touchfeature"],
